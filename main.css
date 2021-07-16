@@ -211,8 +211,8 @@ input:nth-of-type(6):checked ~ .tape {
   );
   --next-state-s1: max(0, var(--rule-1-active), var(--rule-2-active));
   --next-state-s2: max(0, var(--rule-3-active), var(--rule-4-active), var(--rule-5-active));
-  --next-cell-0-value-a: max(0, var(--rule-2-active), var(--rule-5-active));
-  --next-cell-0-value-b: max(0, var(--rule-1-active), var(--rule-4-active));
+  --next-cell-0-value-a: max(0, var(--rule-2-active), var(--rule-4-active));
+  --next-cell-0-value-b: max(0, var(--rule-1-active), var(--rule-5-active));
   --next-cell--4-value-a: var(--cell--4-value-a);
   --next-cell--4-value-b: var(--cell--4-value-b);
   --next-cell--3-value-a: var(--cell--3-value-a);
@@ -221,8 +221,8 @@ input:nth-of-type(6):checked ~ .tape {
   --next-cell--2-value-b: var(--cell--2-value-b);
   --next-cell--1-value-a: var(--cell--1-value-a);
   --next-cell--1-value-b: var(--cell--1-value-b);
-  --next-cell-0-value-a: max(0, var(--rule-2-active), var(--rule-5-active));
-  --next-cell-0-value-b: max(0, var(--rule-1-active), var(--rule-4-active));
+  --next-cell-0-value-a: max(0, var(--rule-2-active), var(--rule-4-active));
+  --next-cell-0-value-b: max(0, var(--rule-1-active), var(--rule-5-active));
   --next-cell-1-value-a: var(--cell-1-value-a);
   --next-cell-1-value-b: var(--cell-1-value-b);
   --next-cell-2-value-a: var(--cell-2-value-a);
