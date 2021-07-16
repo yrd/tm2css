@@ -1,0 +1,314 @@
+@use 'sass:list';
+@use 'sass:string';
+
+//
+// Execution settings.
+// These should match the number of elements present in the DOM. See the
+// comments in index.html on how to format the markup.
+//
+$input-count: 3;
+$tape-length: 4;
+$states: ("s1", "s2");
+$alphabet: ("a", "b");
+
+//
+// Machine program.
+// This is the actual program that the machine will executed. This variable is
+// a list of rules which are in turn formatted like this:
+//   (Current state, Current symbol, Next state, Next symbol, Move)
+// States should be provided like they appear in $states. Similarly, symbols are
+// taken from $alphabet, or null for an empty cell. The last item denotes the
+// direction the machine should move toward - this is either -1 (for moving
+// left), 0 or 1 (for moving right).
+//
+$program: [
+  // This is a demo program that will flip all inputs and keep alternating for
+  // the last one.
+  ("s1", "a", "s1", "b", 1),
+  ("s1", "b", "s1", "a", 1),
+  ("s1", null, "s2", null, -1),
+  ("s2", "a", "s2", "b", 0),
+  ("s2", "b", "s2", "a", 0),
+];
+
+//
+// Rendering settings
+//
+$cell-size: 2rem;
+
+.tape {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+
+  > *:not(.step) {
+    display: inline-block;
+    position: relative;
+    box-sizing: border-box;
+    width: $cell-size;
+    height: $cell-size;
+    overflow: hidden;
+    text-align: center;
+    line-height: $cell-size;
+
+    > span {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translateX(-50%) translateY(-50%);
+    }
+  }
+}
+
+.cell {
+  border: 1px solid #dddddd;
+
+  > span {
+    // Render the cell contents. This works by having a <span> for every
+    // possible symbol in the cell. We can address these from CSS using the
+    // :nth-child selector, and using pseudo elements we can write our own
+    // text into the page. That way, the text is fully generated from the
+    // stylesheet. We do this for every possible value. The correct one is made
+    // visible later.
+    @for $symbol-number from 1 through list.length($alphabet) {
+      $symbol: list.nth($alphabet, $symbol-number);
+
+      &:nth-child(#{$symbol-number}) {
+        &::before {
+          content: "#{$symbol}";
+        }
+      }
+    }
+  }
+
+  // Make exactly the correct <span> visible, depending on whether the cell
+  // currently contains that value. Values are encoded in custom properties
+  // of the form --cell-x-value-s, which have a value of 0 by default. When
+  // the corresponding cell has a value of s, that variable will become 1. In
+  // total, this produces |Alphabet size| * |Tape length| variables.
+  @for $cell from -1 * $tape-length through $tape-length {
+    &:nth-child(#{$tape-length + $cell + 1}) {
+      @for $symbol-number from 1 through list.length($alphabet) {
+        $symbol: list.nth($alphabet, $symbol-number);
+
+        > span:nth-child(#{$symbol-number}) {
+          opacity: var(--cell-#{$cell}-value-#{$symbol});
+        }
+      }
+    }
+  }
+
+  // Highlight the currently read cell.
+  &:nth-child(#{$tape-length + 1}) {
+    border-color: red;
+  }
+}
+
+// Write out the current state. This is rendered much like cell values with
+// the same <span> and ::before trick.
+.state {
+  @for $state-number from 1 through list.length($states) {
+    $state: list.nth($states, $state-number);
+
+    > span:nth-child(#{$state-number}) {
+      opacity: var(--state-#{$state});
+
+      &::before {
+        content: "#{$state}";
+      }
+    }
+  }
+}
+
+// The direction <span>s are toggled based on how the tape moved in the last
+// step. This gives us a graphical representation of the machine's movement.
+// Again, this is rendered just like cell values are, only we have exactly two
+// possible values this time - 'go left' and 'go right'.
+.direction {
+  // Move the direction arrow up so it's between both tapes, since it shows the
+  // difference between both states.
+  transform: translateY(#{-0.5rem - 0.5 * $cell-size});
+
+  > span:first-child {
+    opacity: var(--move-left);
+
+    &::before {
+      content: "<";
+    }
+  }
+
+  > span:last-child {
+    opacity: var(--move-right);
+
+    &::before {
+      content: ">";
+    }
+  }
+}
+
+// Apply the initial empty state for the first tape.
+input ~ .tape {
+  --offset: 0;
+  @each $state in $states {
+    --state-#{$state}: 0;
+  }
+  --state-#{list.nth($states, 1)}: 1;
+
+  @for $cell from -1 * $tape-length through $tape-length {
+    @each $symbol in $alphabet {
+      --cell-#{$cell}-value-#{$symbol}: 0;
+    }
+  }
+
+  > .direction {
+    opacity: 0;
+  }
+}
+
+// Go through all the inputs to process them individually.
+@for $input from 1 through $input-count {
+  @for $symbol-number from 1 through list.length($alphabet) {
+    $symbol: list.nth($alphabet, $symbol-number);
+
+    input:nth-of-type(#{
+      ($input - 1) * list.length($alphabet) + $symbol-number
+    }) {
+      // Render the symbol's character into the label.
+      + label::before {
+        content: "#{$symbol}";
+      }
+
+      // Apply the starting values to the first tape, when applicable.
+      &:checked ~ .tape {
+        --cell-#{$input - 1}-value-#{$symbol}: 1;
+      }
+    }
+  }
+}
+
+// Process each rule and build up the next state.
+.step {
+  flex-basis: 100%;
+
+  // Check whether our cell is currently empty. We do that by subtracting
+  // the value for each possible symbol from 1. If one of them is set, that
+  // expression will evaluate to zero. If none of the is, it will stay at one.
+  $emptyCalculation: "1";
+  @each $symbol in $alphabet {
+    $emptyCalculation: "#{$emptyCalculation} - var(--cell-0-value-#{$symbol})";
+  }
+  --cell-0-empty: calc(#{$emptyCalculation});
+
+  // Find out which rules are currently active. If $program is a valid fully
+  // defined Turing machine, there should always be exactly one rule which
+  // fires. Each rule receives a custom property named --rule-x-active, which
+  // is normally 0 but turns 1 when rule number x fires.
+  @for $rule-number from 1 through list.length($program) {
+    $rule: list.nth($program, $rule-number);
+
+    $currentState: list.nth($rule, 1);
+    $currentSymbol: list.nth($rule, 2);
+
+    $cellValue: var(--cell-0-value-#{$currentSymbol});
+    @if $currentSymbol == null {
+      $cellValue: var(--cell-0-empty);
+    }
+
+    // A rule fires when the currently read cell matches it's defined symbol
+    // and the state corresponds to the given value. These two booleans are
+    // AND-ed together:
+    --rule-#{$rule-number}-active: min(
+      #{$cellValue},
+      var(--state-#{$currentState})
+    );
+  }
+
+  // This function builds a CSS expression that evaluates to 1 when the next
+  // step of the program evaluation will cause $attribute to become
+  // $target-value. The attribute is provided by it's number in the rule
+  // definition. See the exact usage below, but it boils down to this:
+  //   evaluate-program("s1", 3)
+  // will return 1 when the next step will have a state (which is provided in
+  // first place of each rule in $program) of "s1". It uses the --rule-x-active
+  // variables to determine the result.
+  @function evaluate-program($target-value, $attribute) {
+    $activators: (0,);
+
+    @for $rule-number from 1 through list.length($program) {
+      $rule: list.nth($program, $rule-number);
+
+      @if list.nth($rule, $attribute) == $target-value {
+        $activators: list.append(
+          $activators,
+          var(--rule-#{$rule-number}-active),
+          $separator: comma
+        );
+      }
+    }
+
+    @return max(#{$activators});
+  }
+
+  // The following sections evaluate the program and save the results into
+  // 'temporary' properties that will be read out later. We can't directly
+  // set --state-xyz here because CSS custom properties cannot contain [1]
+  // cycles. That's why we had to introduce a middle element .step which
+  // performs the calculation, which .tape then picks up.
+  // 1: https://www.w3.org/TR/css-variables/#cycles
+
+  @each $state in $states {
+    --next-state-#{$state}: #{evaluate-program($state, 3)};
+  }
+
+  @each $symbol in $alphabet {
+    --next-cell-0-value-#{$symbol}: #{evaluate-program($symbol, 4)};
+  }
+
+  @for $cell from -1 * $tape-length through $tape-length {
+    @each $symbol in $alphabet {
+      @if $cell == 0 {
+        --next-cell-0-value-#{$symbol}: #{evaluate-program($symbol, 4)};
+      } @else {
+        --next-cell-#{$cell}-value-#{$symbol}: var(--cell-#{$cell}-value-#{$symbol});
+      }
+    }
+  }
+
+  --move-left: #{evaluate-program(-1, 5)};
+  --move-right: #{evaluate-program(1, 5)};
+
+  > .tape {
+    // Set the new state from the calculations above.
+    @each $state in $states {
+      --state-#{$state}: var(--next-state-#{$state});
+    }
+
+    // Set the new cell values. This works basically the same way as with the
+    // state above, but here we also have to factor in how tapes move. That
+    // works like this: for a given cell x, set the value of --cell-x to
+    // the following:
+    //   IF --move-left THEN use --next-cell-(x+1)
+    //   IF --move-right THEN use --next-cell(x-1)
+    //   OTHERWISE use --next-cell-x
+    // Since we are using one-hot encoding, a character s will be evaluated like
+    // this:
+    //   --cell-x-value-s =
+    //     (--move-left AND --next-cell-(x+1)-value-s) OR
+    //     (--move-right AND --next-cell-(x-1)-value-s) OR
+    //     (NOT --move-left AND NOT --move-right AND --next-cell-x-value-s)
+    @for $cell from -1 * $tape-length through $tape-length {
+      @each $symbol in $alphabet {
+        --cell-#{$cell}-value-#{$symbol}: max(
+          min(var(--move-left), var(--next-cell-#{$cell - 1}-value-#{$symbol})),
+          min(var(--move-right), var(--next-cell-#{$cell + 1}-value-#{$symbol})),
+          min(
+            calc(1 - var(--move-left)),
+            calc(1 - var(--move-right)),
+            var(--next-cell-#{$cell}-value-#{$symbol})
+          )
+        );
+      }
+    }
+  }
+}
+

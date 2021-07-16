@@ -1,0 +1,404 @@
+.tape {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+.tape > *:not(.step) {
+  display: inline-block;
+  position: relative;
+  box-sizing: border-box;
+  width: 2rem;
+  height: 2rem;
+  overflow: hidden;
+  text-align: center;
+  line-height: 2rem;
+}
+.tape > *:not(.step) > span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+}
+
+.cell {
+  border: 1px solid #dddddd;
+}
+.cell > span:nth-child(1)::before {
+  content: "a";
+}
+.cell > span:nth-child(2)::before {
+  content: "b";
+}
+.cell:nth-child(1) > span:nth-child(1) {
+  opacity: var(--cell--4-value-a);
+}
+.cell:nth-child(1) > span:nth-child(2) {
+  opacity: var(--cell--4-value-b);
+}
+.cell:nth-child(2) > span:nth-child(1) {
+  opacity: var(--cell--3-value-a);
+}
+.cell:nth-child(2) > span:nth-child(2) {
+  opacity: var(--cell--3-value-b);
+}
+.cell:nth-child(3) > span:nth-child(1) {
+  opacity: var(--cell--2-value-a);
+}
+.cell:nth-child(3) > span:nth-child(2) {
+  opacity: var(--cell--2-value-b);
+}
+.cell:nth-child(4) > span:nth-child(1) {
+  opacity: var(--cell--1-value-a);
+}
+.cell:nth-child(4) > span:nth-child(2) {
+  opacity: var(--cell--1-value-b);
+}
+.cell:nth-child(5) > span:nth-child(1) {
+  opacity: var(--cell-0-value-a);
+}
+.cell:nth-child(5) > span:nth-child(2) {
+  opacity: var(--cell-0-value-b);
+}
+.cell:nth-child(6) > span:nth-child(1) {
+  opacity: var(--cell-1-value-a);
+}
+.cell:nth-child(6) > span:nth-child(2) {
+  opacity: var(--cell-1-value-b);
+}
+.cell:nth-child(7) > span:nth-child(1) {
+  opacity: var(--cell-2-value-a);
+}
+.cell:nth-child(7) > span:nth-child(2) {
+  opacity: var(--cell-2-value-b);
+}
+.cell:nth-child(8) > span:nth-child(1) {
+  opacity: var(--cell-3-value-a);
+}
+.cell:nth-child(8) > span:nth-child(2) {
+  opacity: var(--cell-3-value-b);
+}
+.cell:nth-child(9) > span:nth-child(1) {
+  opacity: var(--cell-4-value-a);
+}
+.cell:nth-child(9) > span:nth-child(2) {
+  opacity: var(--cell-4-value-b);
+}
+.cell:nth-child(5) {
+  border-color: red;
+}
+
+.state > span:nth-child(1) {
+  opacity: var(--state-s1);
+}
+.state > span:nth-child(1)::before {
+  content: "s1";
+}
+.state > span:nth-child(2) {
+  opacity: var(--state-s2);
+}
+.state > span:nth-child(2)::before {
+  content: "s2";
+}
+
+.direction {
+  transform: translateY(-1.5rem);
+}
+.direction > span:first-child {
+  opacity: var(--move-left);
+}
+.direction > span:first-child::before {
+  content: "<";
+}
+.direction > span:last-child {
+  opacity: var(--move-right);
+}
+.direction > span:last-child::before {
+  content: ">";
+}
+
+input ~ .tape {
+  --offset: 0;
+  --state-s1: 0;
+  --state-s2: 0;
+  --state-s1: 1;
+  --cell--4-value-a: 0;
+  --cell--4-value-b: 0;
+  --cell--3-value-a: 0;
+  --cell--3-value-b: 0;
+  --cell--2-value-a: 0;
+  --cell--2-value-b: 0;
+  --cell--1-value-a: 0;
+  --cell--1-value-b: 0;
+  --cell-0-value-a: 0;
+  --cell-0-value-b: 0;
+  --cell-1-value-a: 0;
+  --cell-1-value-b: 0;
+  --cell-2-value-a: 0;
+  --cell-2-value-b: 0;
+  --cell-3-value-a: 0;
+  --cell-3-value-b: 0;
+  --cell-4-value-a: 0;
+  --cell-4-value-b: 0;
+}
+input ~ .tape > .direction {
+  opacity: 0;
+}
+
+input:nth-of-type(1) + label::before {
+  content: "a";
+}
+input:nth-of-type(1):checked ~ .tape {
+  --cell-0-value-a: 1;
+}
+
+input:nth-of-type(2) + label::before {
+  content: "b";
+}
+input:nth-of-type(2):checked ~ .tape {
+  --cell-0-value-b: 1;
+}
+
+input:nth-of-type(3) + label::before {
+  content: "a";
+}
+input:nth-of-type(3):checked ~ .tape {
+  --cell-1-value-a: 1;
+}
+
+input:nth-of-type(4) + label::before {
+  content: "b";
+}
+input:nth-of-type(4):checked ~ .tape {
+  --cell-1-value-b: 1;
+}
+
+input:nth-of-type(5) + label::before {
+  content: "a";
+}
+input:nth-of-type(5):checked ~ .tape {
+  --cell-2-value-a: 1;
+}
+
+input:nth-of-type(6) + label::before {
+  content: "b";
+}
+input:nth-of-type(6):checked ~ .tape {
+  --cell-2-value-b: 1;
+}
+
+.step {
+  flex-basis: 100%;
+  --cell-0-empty: calc(1 - var(--cell-0-value-a) - var(--cell-0-value-b));
+  --rule-1-active: min(
+    var(--cell-0-value-a),
+    var(--state-s1)
+  );
+  --rule-2-active: min(
+    var(--cell-0-value-b),
+    var(--state-s1)
+  );
+  --rule-3-active: min(
+    var(--cell-0-empty),
+    var(--state-s1)
+  );
+  --rule-4-active: min(
+    var(--cell-0-value-a),
+    var(--state-s2)
+  );
+  --rule-5-active: min(
+    var(--cell-0-value-b),
+    var(--state-s2)
+  );
+  --next-state-s1: max(0, var(--rule-1-active), var(--rule-2-active));
+  --next-state-s2: max(0, var(--rule-3-active), var(--rule-4-active), var(--rule-5-active));
+  --next-cell-0-value-a: max(0, var(--rule-2-active), var(--rule-5-active));
+  --next-cell-0-value-b: max(0, var(--rule-1-active), var(--rule-4-active));
+  --next-cell--4-value-a: var(--cell--4-value-a);
+  --next-cell--4-value-b: var(--cell--4-value-b);
+  --next-cell--3-value-a: var(--cell--3-value-a);
+  --next-cell--3-value-b: var(--cell--3-value-b);
+  --next-cell--2-value-a: var(--cell--2-value-a);
+  --next-cell--2-value-b: var(--cell--2-value-b);
+  --next-cell--1-value-a: var(--cell--1-value-a);
+  --next-cell--1-value-b: var(--cell--1-value-b);
+  --next-cell-0-value-a: max(0, var(--rule-2-active), var(--rule-5-active));
+  --next-cell-0-value-b: max(0, var(--rule-1-active), var(--rule-4-active));
+  --next-cell-1-value-a: var(--cell-1-value-a);
+  --next-cell-1-value-b: var(--cell-1-value-b);
+  --next-cell-2-value-a: var(--cell-2-value-a);
+  --next-cell-2-value-b: var(--cell-2-value-b);
+  --next-cell-3-value-a: var(--cell-3-value-a);
+  --next-cell-3-value-b: var(--cell-3-value-b);
+  --next-cell-4-value-a: var(--cell-4-value-a);
+  --next-cell-4-value-b: var(--cell-4-value-b);
+  --move-left: max(0, var(--rule-3-active));
+  --move-right: max(0, var(--rule-1-active), var(--rule-2-active));
+}
+.step > .tape {
+  --state-s1: var(--next-state-s1);
+  --state-s2: var(--next-state-s2);
+  --cell--4-value-a: max(
+    min(var(--move-left), var(--next-cell--5-value-a)),
+    min(var(--move-right), var(--next-cell--3-value-a)),
+    min(
+      calc(1 - var(--move-left)),
+      calc(1 - var(--move-right)),
+      var(--next-cell--4-value-a)
+    )
+  );
+  --cell--4-value-b: max(
+    min(var(--move-left), var(--next-cell--5-value-b)),
+    min(var(--move-right), var(--next-cell--3-value-b)),
+    min(
+      calc(1 - var(--move-left)),
+      calc(1 - var(--move-right)),
+      var(--next-cell--4-value-b)
+    )
+  );
+  --cell--3-value-a: max(
+    min(var(--move-left), var(--next-cell--4-value-a)),
+    min(var(--move-right), var(--next-cell--2-value-a)),
+    min(
+      calc(1 - var(--move-left)),
+      calc(1 - var(--move-right)),
+      var(--next-cell--3-value-a)
+    )
+  );
+  --cell--3-value-b: max(
+    min(var(--move-left), var(--next-cell--4-value-b)),
+    min(var(--move-right), var(--next-cell--2-value-b)),
+    min(
+      calc(1 - var(--move-left)),
+      calc(1 - var(--move-right)),
+      var(--next-cell--3-value-b)
+    )
+  );
+  --cell--2-value-a: max(
+    min(var(--move-left), var(--next-cell--3-value-a)),
+    min(var(--move-right), var(--next-cell--1-value-a)),
+    min(
+      calc(1 - var(--move-left)),
+      calc(1 - var(--move-right)),
+      var(--next-cell--2-value-a)
+    )
+  );
+  --cell--2-value-b: max(
+    min(var(--move-left), var(--next-cell--3-value-b)),
+    min(var(--move-right), var(--next-cell--1-value-b)),
+    min(
+      calc(1 - var(--move-left)),
+      calc(1 - var(--move-right)),
+      var(--next-cell--2-value-b)
+    )
+  );
+  --cell--1-value-a: max(
+    min(var(--move-left), var(--next-cell--2-value-a)),
+    min(var(--move-right), var(--next-cell-0-value-a)),
+    min(
+      calc(1 - var(--move-left)),
+      calc(1 - var(--move-right)),
+      var(--next-cell--1-value-a)
+    )
+  );
+  --cell--1-value-b: max(
+    min(var(--move-left), var(--next-cell--2-value-b)),
+    min(var(--move-right), var(--next-cell-0-value-b)),
+    min(
+      calc(1 - var(--move-left)),
+      calc(1 - var(--move-right)),
+      var(--next-cell--1-value-b)
+    )
+  );
+  --cell-0-value-a: max(
+    min(var(--move-left), var(--next-cell--1-value-a)),
+    min(var(--move-right), var(--next-cell-1-value-a)),
+    min(
+      calc(1 - var(--move-left)),
+      calc(1 - var(--move-right)),
+      var(--next-cell-0-value-a)
+    )
+  );
+  --cell-0-value-b: max(
+    min(var(--move-left), var(--next-cell--1-value-b)),
+    min(var(--move-right), var(--next-cell-1-value-b)),
+    min(
+      calc(1 - var(--move-left)),
+      calc(1 - var(--move-right)),
+      var(--next-cell-0-value-b)
+    )
+  );
+  --cell-1-value-a: max(
+    min(var(--move-left), var(--next-cell-0-value-a)),
+    min(var(--move-right), var(--next-cell-2-value-a)),
+    min(
+      calc(1 - var(--move-left)),
+      calc(1 - var(--move-right)),
+      var(--next-cell-1-value-a)
+    )
+  );
+  --cell-1-value-b: max(
+    min(var(--move-left), var(--next-cell-0-value-b)),
+    min(var(--move-right), var(--next-cell-2-value-b)),
+    min(
+      calc(1 - var(--move-left)),
+      calc(1 - var(--move-right)),
+      var(--next-cell-1-value-b)
+    )
+  );
+  --cell-2-value-a: max(
+    min(var(--move-left), var(--next-cell-1-value-a)),
+    min(var(--move-right), var(--next-cell-3-value-a)),
+    min(
+      calc(1 - var(--move-left)),
+      calc(1 - var(--move-right)),
+      var(--next-cell-2-value-a)
+    )
+  );
+  --cell-2-value-b: max(
+    min(var(--move-left), var(--next-cell-1-value-b)),
+    min(var(--move-right), var(--next-cell-3-value-b)),
+    min(
+      calc(1 - var(--move-left)),
+      calc(1 - var(--move-right)),
+      var(--next-cell-2-value-b)
+    )
+  );
+  --cell-3-value-a: max(
+    min(var(--move-left), var(--next-cell-2-value-a)),
+    min(var(--move-right), var(--next-cell-4-value-a)),
+    min(
+      calc(1 - var(--move-left)),
+      calc(1 - var(--move-right)),
+      var(--next-cell-3-value-a)
+    )
+  );
+  --cell-3-value-b: max(
+    min(var(--move-left), var(--next-cell-2-value-b)),
+    min(var(--move-right), var(--next-cell-4-value-b)),
+    min(
+      calc(1 - var(--move-left)),
+      calc(1 - var(--move-right)),
+      var(--next-cell-3-value-b)
+    )
+  );
+  --cell-4-value-a: max(
+    min(var(--move-left), var(--next-cell-3-value-a)),
+    min(var(--move-right), var(--next-cell-5-value-a)),
+    min(
+      calc(1 - var(--move-left)),
+      calc(1 - var(--move-right)),
+      var(--next-cell-4-value-a)
+    )
+  );
+  --cell-4-value-b: max(
+    min(var(--move-left), var(--next-cell-3-value-b)),
+    min(var(--move-right), var(--next-cell-5-value-b)),
+    min(
+      calc(1 - var(--move-left)),
+      calc(1 - var(--move-right)),
+      var(--next-cell-4-value-b)
+    )
+  );
+}
+
+/*# sourceMappingURL=main.css.map */

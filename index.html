@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    >
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <link rel="stylesheet" href="main.css" />
+  </head>
+  <body>
+    <!--
+    For each input in $input-count, create an element like this:
+      <input id="input1-1" type="radio" name="input1" /><label for="input1-1"></label>
+    This needs to be repeated for each symbol in the alphabet. Make sure the
+    name stays the same for each input, but the IDs need to be unique.
+    -->
+
+    <input id="input1-1" type="radio" name="input1" /><label for="input1-1"></label>
+    <input id="input1-2" type="radio" name="input1" /><label for="input1-2"></label>
+    &emsp;
+    <input id="input2-1" type="radio" name="input2" /><label for="input2-1"></label>
+    <input id="input2-2" type="radio" name="input2" /><label for="input2-2"></label>
+    &emsp;
+    <input id="input3-1" type="radio" name="input3" /><label for="input3-1"></label>
+    <input id="input3-2" type="radio" name="input3" /><label for="input3-2"></label>
+
+    <!--
+    Tapes are modeled like this:
+      <div class="tape">
+        <div class="cell"><span></span><span></span></div>
+        <div class="cell"><span></span><span></span></div>
+      </div>
+    The number of cells in a tape should be equal to twice the $tape-length plus
+    one. Further, each cell should have a number of <span>s corresponding to the
+    size of the $alphabet.
+
+    To calculate additional steps, create a <div class="step"> before the tape's
+    closing tab and copy the entire thing in there.
+    -->
+
+    <div class="tape">
+      <div class="cell"><span></span><span></span></div>
+      <div class="cell"><span></span><span></span></div>
+      <div class="cell"><span></span><span></span></div>
+      <div class="cell"><span></span><span></span></div>
+      <div class="cell"><span></span><span></span></div>
+      <div class="cell"><span></span><span></span></div>
+      <div class="cell"><span></span><span></span></div>
+      <div class="cell"><span></span><span></span></div>
+      <div class="cell"><span></span><span></span></div>
+      <div class="direction"><span></span><span></span></div>
+      <div class="state"><span></span><span></span></div>
+
+      <div class="step">
+        <div class="tape">
+          <div class="cell"><span></span><span></span></div>
+          <div class="cell"><span></span><span></span></div>
+          <div class="cell"><span></span><span></span></div>
+          <div class="cell"><span></span><span></span></div>
+          <div class="cell"><span></span><span></span></div>
+          <div class="cell"><span></span><span></span></div>
+          <div class="cell"><span></span><span></span></div>
+          <div class="cell"><span></span><span></span></div>
+          <div class="cell"><span></span><span></span></div>
+          <div class="direction"><span></span><span></span></div>
+          <div class="state"><span></span><span></span></div>
+
+          <div class="step">
+            <div class="tape">
+              <div class="cell"><span></span><span></span></div>
+              <div class="cell"><span></span><span></span></div>
+              <div class="cell"><span></span><span></span></div>
+              <div class="cell"><span></span><span></span></div>
+              <div class="cell"><span></span><span></span></div>
+              <div class="cell"><span></span><span></span></div>
+              <div class="cell"><span></span><span></span></div>
+              <div class="cell"><span></span><span></span></div>
+              <div class="cell"><span></span><span></span></div>
+              <div class="direction"><span></span><span></span></div>
+              <div class="state"><span></span><span></span></div>
+
+              <div class="step">
+                <div class="tape">
+                  <div class="cell"><span></span><span></span></div>
+                  <div class="cell"><span></span><span></span></div>
+                  <div class="cell"><span></span><span></span></div>
+                  <div class="cell"><span></span><span></span></div>
+                  <div class="cell"><span></span><span></span></div>
+                  <div class="cell"><span></span><span></span></div>
+                  <div class="cell"><span></span><span></span></div>
+                  <div class="cell"><span></span><span></span></div>
+                  <div class="cell"><span></span><span></span></div>
+                  <div class="direction"><span></span><span></span></div>
+                  <div class="state"><span></span><span></span></div>
+
+                  <div class="step">
+                    <div class="tape">
+                      <div class="cell"><span></span><span></span></div>
+                      <div class="cell"><span></span><span></span></div>
+                      <div class="cell"><span></span><span></span></div>
+                      <div class="cell"><span></span><span></span></div>
+                      <div class="cell"><span></span><span></span></div>
+                      <div class="cell"><span></span><span></span></div>
+                      <div class="cell"><span></span><span></span></div>
+                      <div class="cell"><span></span><span></span></div>
+                      <div class="cell"><span></span><span></span></div>
+                      <div class="direction"><span></span><span></span></div>
+                      <div class="state"><span></span><span></span></div>
+
+                      <div class="step">
+                        <div class="tape">
+                          <div class="cell"><span></span><span></span></div>
+                          <div class="cell"><span></span><span></span></div>
+                          <div class="cell"><span></span><span></span></div>
+                          <div class="cell"><span></span><span></span></div>
+                          <div class="cell"><span></span><span></span></div>
+                          <div class="cell"><span></span><span></span></div>
+                          <div class="cell"><span></span><span></span></div>
+                          <div class="cell"><span></span><span></span></div>
+                          <div class="cell"><span></span><span></span></div>
+                          <div class="direction"><span></span><span></span></div>
+                          <div class="state"><span></span><span></span></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
